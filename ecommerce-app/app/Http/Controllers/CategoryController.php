@@ -3,17 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use\App\Models\Category;
+use App\Http\Requests\AddCategoryRequest;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
+        try{
+            $categories = Category::orderBy('category_title', 'ASC')->get();
+            if($categories){
+                return response()->json([
+                    'data'=> $categories
+                ],200);
+            }
+            return response()->json([
+                'category'=>"empty"
+            ],404);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'category'=>'internal error'
+            ],500);
+        }
     }
 
     /**
@@ -30,22 +47,43 @@ class CategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(AddCategoryRequest $request)
     {
-        //
+        $category = new Category();
+        $category->fill($request->all());//because we used fillable
+        if($category->save()){ //returns a boolean
+            return response()->json([
+                'data'=> $category
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'category'=>'category could not be added'
+            ],500);
+        }
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        //
+        $category = Category::find($id);
+        if($category)
+        {
+            return response()->json([
+                'data'=> $category
+            ],200);
+        }
+        return response()->json([
+            'category'=>'category could not be found'
+        ],500);
     }
 
     /**
@@ -64,21 +102,50 @@ class CategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $category = Category::find($id);
+        //what is the best way to validate the update request
+        if($category){
+            $category->update($request->all());//because we used fillable
+            if($category->save()){ //returns a boolean
+                return response()->json([
+                    'data'=> $category
+                ],200);
+            }
+            else
+            {
+                return response()->json([
+                    'category'=>'category could not be updated'
+                ],500);
+            }
+        }
+        return response()->json([
+            'category'=>'category could not be found'
+        ],500);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        $category = Category::find($id);
+        if($category->delete()){ //returns a boolean
+            return response()->json([
+                'category'=> "good for you"
+            ],200);
+        }
+        else
+        {
+            return response()->json([
+                'category'=>'category could not be deleted'
+            ],500);
+        }
     }
 }
