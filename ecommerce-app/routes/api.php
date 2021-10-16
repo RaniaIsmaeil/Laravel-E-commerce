@@ -22,13 +22,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::post('logout', [AuthController::class,'logout']);
 Route::post('login', [AuthController::class,'login']);
 Route::post('register', [AuthController::class,'register']);
-Route::post('logout', [AuthController::class,'logout']);
-Route::group(['middleware' => 'auth.jwt'], function () {
+// Route::group(['middleware' => 'auth.jwt'], function () {
 
-});
+// });
 
 Route::get('/categories',[CategoryController::class, 'index']);
 Route::post('/categories',[CategoryController::class, 'store']);
@@ -47,7 +46,3 @@ Route::post('/messages',[MessageController::class, 'store']);
 Route::get('messages/{id}', [MessageController::class,'show']);
 Route::delete('messages/{id}', [MessageController::class,'destroy']);
 Route::put('message/{id}', [MessageController::class,'update']);
-
-
-
-

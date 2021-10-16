@@ -13,10 +13,10 @@ return [
     |
     */
 
-    'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
-    ],
+    // 'defaults' => [
+    //     'guard' => 'web',
+    //     'passwords' => 'users',
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ return [
     'guard' => 'api',
     'passwords' => 'users',
   ],
-  
+
 
     'guards' => [
         'api' => [
